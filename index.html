@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FIFA World Cup 2026™ – Ticket Transfer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --purple: #6B3FA0;
+  --purple-dark: #4a2b72;
+  --purple-light: #8B5CC8;
+  --purple-bg: #f3eeff;
+  --navy: #001533;
+  --navy2: #002147;
+  --gold: #C9A84C;
+  --border: #e0e0e0;
+  --text: #1a1a2e;
+  --muted: #6b7280;
+  --green: #1a7a4a;
+  --green-bg: #e6f7ed;
+}
+
+body { font-family: 'Barlow', sans-serif; background: #f0f0f5; color: var(--text); min-height: 100vh; }
+
+.ribbon { background: var(--navy); color: var(--gold); text-align: center; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; padding: 6px; }
+
+.topbar { background: var(--navy); padding: 10px 32px; display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid var(--purple); gap: 16px; flex-wrap: wrap; }
+.fifa-logo { font-family: 'Bebas Neue', sans-serif; font-size: 26px; color: #fff; letter-spacing: 3px; }
+.fifa-logo .plus { color: var(--purple-light); }
+.topbar-links { display: flex; align-items: center; gap: 20px; }
+.topbar-link { font-size: 12px; color: #8aa4c0; cursor: pointer; text-decoration: none; }
+.topbar-link:hover { color: #fff; }
+
+.user-pill { display: flex; align-items: center; gap: 10px; }
+.user-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--purple); display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 14px; color: #fff; border: 2px solid var(--purple-light); flex-shrink: 0; }
+.user-name { font-size: 13px; font-weight: 600; color: #fff; }
+.user-label { font-size: 10px; color: #8aa4c0; }
+.btn-logout { font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; border: 1px solid #2a4060; color: #8aa4c0; background: transparent; padding: 5px 14px; cursor: pointer; border-radius: 2px; }
+.btn-logout:hover { border-color: #8aa4c0; color: #fff; }
+
+.nav { background: var(--navy2); padding: 0 32px; display: flex; border-bottom: 1px solid #0a2a4a; overflow-x: auto; }
+.nav-tab { font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: #7a9ab8; padding: 15px 18px; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -1px; white-space: nowrap; transition: all 0.2s; }
+.nav-tab:hover { color: #fff; }
+.nav-tab.active { color: var(--purple-light); border-bottom-color: var(--purple-light); }
+
+.hero { background: linear-gradient(135deg, var(--navy) 0%, #0a1f3a 60%, #1a0a33 100%); padding: 24px 32px 22px; border-bottom: 1px solid #0a2a4a; display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
+.hero-title { font-family: 'Bebas Neue', sans-serif; font-size: 36px; letter-spacing: 3px; color: #fff; line-height: 1; }
+.hero-title .accent { color: var(--purple-light); }
+.hero-sub { font-size: 13px; color: #8aa4c0; margin-top: 5px; }
+.hero-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--purple); color: #fff; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; padding: 5px 12px; border-radius: 2px; margin-top: 10px; }
+.hero-right { text-align: right; }
+.hero-event { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 700; color: #fff; letter-spacing: 1px; }
+.hero-dates { font-size: 13px; color: var(--gold); margin-top: 4px; }
+.hero-flags { font-size: 22px; margin-top: 10px; display: flex; gap: 6px; justify-content: flex-end; }
+
+.page-wrap { max-width: 1100px; margin: 0 auto; padding: 28px 20px; display: grid; grid-template-columns: 1fr 300px; gap: 24px; }
+
+@media (max-width: 820px) {
+  .page-wrap { grid-template-columns: 1fr; }
+  .hero-right { text-align: left; }
+  .hero-flags { justify-content: flex-start; }
+  .topbar { padding: 10px 16px; }
+  .topbar-links { display: none; }
+  .form-row { grid-template-columns: 1fr !important; }
+  .match-selector { flex-direction: column; }
+}
+
+.section-label { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--purple); margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+.panel { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 22px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.panel-title { font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text); margin-bottom: 18px; padding-bottom: 12px; border-bottom: 2px solid var(--purple-bg); display: flex; align-items: center; gap: 8px; }
+.panel-title .dot { width: 8px; height: 8px; background: var(--purple); border-radius: 50%; display: inline-block; flex-shrink:0; }
+
+.match-selector { display: flex; gap: 10px; margin-bottom: 20px; }
+.match-tab { flex: 1; border: 2px solid var(--border); border-radius: 8px; padding: 14px 16px; cursor: pointer; transition: all 0.2s; background: #fafafa; position: relative; }
+.match-tab:hover { border-color: var(--purple-light); background: var(--purple-bg); }
+.match-tab.active { border-color: var(--purple); background: var(--purple-bg); }
+.match-tab-teams { font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+.match-tab-date { font-size: 12px; color: var(--muted); margin-top: 4px; }
+.match-tab-seats { font-size: 11px; font-weight: 700; color: var(--purple); margin-top: 6px; }
+.active-dot { position: absolute; top: 10px; right: 10px; width: 8px; height: 8px; border-radius: 50%; background: var(--purple); display: none; }
+.match-tab.active .active-dot { display: block; }
+
+.ticket-card { background: #fff; border: 1.5px solid var(--border); border-radius: 8px; padding: 18px; margin-bottom: 14px; position: relative; overflow: hidden; }
+.ticket-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--purple); }
+
+.match-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+.team-block { font-family: 'Barlow Condensed', sans-serif; font-size: 19px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+.vs-badge { background: var(--navy); color: #fff; font-family: 'Bebas Neue', sans-serif; font-size: 13px; letter-spacing: 2px; padding: 3px 8px; border-radius: 3px; }
+.ticket-venue { font-size: 13px; color: var(--muted); }
+.ticket-venue .hl { color: var(--purple); font-weight: 600; }
+.ticket-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+
+.tag { font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; padding: 3px 10px; border-radius: 3px; white-space: nowrap; }
+.tag-purple { background: var(--purple-bg); color: var(--purple-dark); }
+.tag-navy { background: #e8edf3; color: #2a4060; }
+.tag-gold { background: #fdf3e0; color: #7a5a10; }
+.tag-green { background: var(--green-bg); color: var(--green); }
+
+.seat-rows { margin-top: 14px; border-top: 1px dashed #e0d0f0; padding-top: 14px; }
+.seat-rows-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+
+.seat-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; margin-bottom: 6px; border: 1.5px solid var(--border); border-radius: 6px; cursor: pointer; transition: all 0.2s; background: #fafafa; }
+.seat-row:hover { border-color: var(--purple-light); background: var(--purple-bg); }
+.seat-row.selected { border-color: var(--purple); background: var(--purple-bg); }
+.seat-info { display: flex; align-items: center; gap: 12px; }
+.checkbox { width: 20px; height: 20px; border: 2px solid #ccc; border-radius: 4px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0; }
+.seat-row.selected .checkbox { border-color: var(--purple); background: var(--purple); }
+.checkmark { color: #fff; font-size: 12px; font-weight: 700; display: none; }
+.seat-row.selected .checkmark { display: block; }
+.seat-label { font-size: 14px; font-weight: 600; color: var(--text); }
+.seat-cat { font-size: 12px; color: var(--muted); }
+.seat-price { font-family: 'Barlow Condensed', sans-serif; font-size: 20px; font-weight: 700; color: var(--purple); flex-shrink:0; }
+.selected-count { font-size: 12px; color: var(--purple); font-weight: 700; margin-top: 8px; }
+
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.form-group { margin-bottom: 14px; }
+.form-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; display: block; }
+.form-input { width: 100%; border: 1.5px solid var(--border); border-radius: 6px; background: #fafafa; color: var(--text); padding: 10px 13px; font-family: 'Barlow', sans-serif; font-size: 14px; outline: none; transition: border 0.2s; -webkit-appearance: none; }
+.form-input:focus { border-color: var(--purple); background: #fff; box-shadow: 0 0 0 3px rgba(107,63,160,0.1); }
+.form-input::placeholder { color: #bbb; }
+
+.steps { display: flex; align-items: center; margin-bottom: 22px; }
+.step { display: flex; align-items: center; gap: 7px; flex: 1; }
+.step-num { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 13px; border: 2px solid #ddd; color: #bbb; background: #fff; flex-shrink: 0; transition: all 0.3s; }
+.step.active .step-num { border-color: var(--purple); color: var(--purple); }
+.step.done .step-num { border-color: var(--green); background: var(--green); color: #fff; }
+.step-text { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; color: #bbb; transition: color 0.3s; }
+.step.active .step-text { color: var(--purple); }
+.step.done .step-text { color: var(--green); }
+.step-line { height: 2px; flex: 1; background: #e0e0e0; margin: 0 6px; border-radius: 2px; }
+
+.btn-primary { width: 100%; background: var(--purple); color: #fff; border: none; border-radius: 6px; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 17px; letter-spacing: 2px; text-transform: uppercase; padding: 14px; cursor: pointer; transition: all 0.2s; margin-top: 8px; }
+.btn-primary:hover { background: var(--purple-light); }
+.btn-secondary { background: transparent; color: var(--purple); border: 1.5px solid var(--purple); border-radius: 6px; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 14px; letter-spacing: 1.5px; text-transform: uppercase; padding: 9px 18px; cursor: pointer; transition: all 0.2s; }
+.btn-secondary:hover { background: var(--purple-bg); }
+
+.summary-row { display: flex; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid #f0eeff; font-size: 14px; align-items: center; }
+.summary-row:last-child { border-bottom: none; }
+.summary-key { color: var(--muted); }
+.summary-val { font-weight: 600; color: var(--text); text-align: right; }
+.summary-val.purple { color: var(--purple); }
+.summary-total { display: flex; justify-content: space-between; padding: 12px 0 0; border-top: 2px solid var(--purple-bg); margin-top: 4px; font-size: 16px; font-weight: 700; }
+
+.notice-box { background: #fffbf0; border: 1px solid #f5e0a0; border-left: 4px solid var(--gold); border-radius: 6px; padding: 12px 14px; font-size: 12px; color: #6a4f10; line-height: 1.7; margin-bottom: 16px; }
+.security-note { display: flex; align-items: flex-start; gap: 10px; background: var(--purple-bg); border: 1px solid #d9c7f0; border-radius: 6px; padding: 11px 14px; font-size: 12px; color: var(--purple-dark); margin-top: 14px; line-height: 1.6; }
+
+.success-screen { text-align: center; padding: 24px 16px; display: none; }
+.success-icon { width: 64px; height: 64px; background: var(--green-bg); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 28px; }
+.success-title { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 2px; color: var(--green); margin-bottom: 8px; }
+.success-sub { font-size: 14px; color: var(--muted); max-width: 380px; margin: 0 auto; line-height: 1.6; }
+
+.sidebar-widget { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 18px; margin-bottom: 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
+.info-row { display: flex; justify-content: space-between; font-size: 13px; padding: 7px 0; border-bottom: 1px solid #f5f5f5; align-items: center; }
+.info-row:last-child { border-bottom: none; }
+.info-key { color: var(--muted); }
+.info-val { font-weight: 600; color: var(--text); text-align: right; }
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+.page-footer { background: var(--navy); color: #4a6a8a; text-align: center; font-size: 11px; letter-spacing: 1px; padding: 16px; margin-top: 32px; }
+.visa-bar { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 10px; }
+.visa-logo { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 700; color: #1a3faa; background: #fff; padding: 3px 10px; border-radius: 3px; }
+
+/* ══ EMAIL MODAL ══ */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+.modal-overlay.open { display: flex; }
+.modal-box { background: #fff; border-radius: 10px; max-width: 620px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.35); animation: slideUp 0.3s ease; }
+@keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.modal-header { background: var(--navy); padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; border-radius: 10px 10px 0 0; }
+.modal-header-title { font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); }
+.modal-close { background: none; border: none; color: #8aa4c0; font-size: 20px; cursor: pointer; line-height: 1; padding: 2px 6px; }
+.modal-close:hover { color: #fff; }
+
+/* Email inner styles */
+.email-wrap { font-family: Arial, sans-serif; font-size: 14px; background: #f2f2f2; padding: 18px; }
+.email-client-bar { background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 13px 16px; margin-bottom: 14px; font-size: 12px; color: #555; line-height: 1.9; }
+.email-client-bar strong { color: #222; }
+.email-body { background: #fff; border-radius: 6px; overflow: hidden; border: 1px solid #ddd; }
+.email-header-top { background: var(--purple); padding: 22px 28px 18px; text-align: center; }
+.email-logo-txt { font-family: 'Bebas Neue', Arial, sans-serif; font-size: 28px; color: #fff; letter-spacing: 4px; margin-bottom: 4px; }
+.email-logo-sub { font-size: 11px; letter-spacing: 2px; color: rgba(255,255,255,0.7); text-transform: uppercase; }
+.email-hero-band { background: var(--navy); padding: 16px 28px; text-align: center; border-bottom: 3px solid var(--gold); }
+.email-match-title { font-family: 'Bebas Neue', Arial, sans-serif; font-size: 24px; letter-spacing: 3px; color: #fff; margin-bottom: 4px; }
+.email-match-date-line { font-size: 12px; color: var(--gold); letter-spacing: 1px; }
+.email-content { padding: 26px 28px; line-height: 1.8; color: #333; }
+.email-content h2 { font-family: 'Bebas Neue', Arial, sans-serif; font-size: 22px; letter-spacing: 2px; color: var(--purple); margin-bottom: 12px; }
+.email-content p { font-size: 14px; margin-bottom: 14px; color: #444; }
+.tkt-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; }
+.tkt-table td { padding: 9px 14px; border-bottom: 1px solid #f0eeff; vertical-align: top; }
+.tkt-table tr:last-child td { border-bottom: none; }
+.tkt-table td:first-child { color: #888; font-weight: 700; text-transform: uppercase; font-size: 11px; letter-spacing: 0.8px; width: 42%; background: #fafafa; }
+.tkt-table td:last-child { color: #222; font-weight: 600; }
+.email-warn { background: #fff8e1; border-left: 4px solid #f0b429; padding: 12px 16px; font-size: 13px; color: #5a4200; border-radius: 0 4px 4px 0; margin: 18px 0; line-height: 1.7; }
+.email-cta-block { background: var(--purple-bg); border: 1px solid #d9c7f0; border-radius: 6px; padding: 16px; text-align: center; margin: 18px 0; }
+.email-cta-block p { margin-bottom: 10px !important; font-size: 13px !important; color: var(--purple-dark) !important; }
+.email-btn { display: inline-block; background: var(--purple); color: #fff; font-weight: 700; font-size: 14px; letter-spacing: 1.5px; text-transform: uppercase; padding: 12px 26px; border-radius: 4px; text-decoration: none; }
+.email-divider { height: 1px; background: #f0eeff; margin: 20px 0; }
+.email-footer-band { background: #f8f8f8; border-top: 1px solid #eee; padding: 16px 28px; text-align: center; font-size: 11px; color: #999; line-height: 1.8; }
+.email-footer-band strong { color: #666; }
+.print-hint { text-align: center; padding: 12px; font-size: 12px; color: var(--muted); border-top: 1px solid var(--border); }
+</style>
+</head>
+<body>
+
+<div class="ribbon">Official FIFA Ticket Transfer Platform &mdash; Secure &amp; Verified</div>
+
+<div class="topbar">
+  <div class="fifa-logo">FIFA<span class="plus">+</span> TICKETS</div>
+  <div class="topbar-links">
+    <a class="topbar-link">Help Centre</a>
+    <a class="topbar-link">Order History</a>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <div class="user-pill">
+      <div class="user-avatar">JD</div>
+      <div>
+        <div class="user-name">John Doe</div>
+        <div class="user-label">FIFA+ Member &nbsp;·&nbsp; Verified ✓</div>
+      </div>
+    </div>
+    <button class="btn-logout">Sign Out</button>
+  </div>
+</div>
+
+<div class="nav">
+  <div class="nav-tab active" onclick="switchTab('transfer')">Ticket Transfer</div>
+  <div class="nav-tab" onclick="switchTab('my-tickets')">My Tickets</div>
+  <div class="nav-tab" onclick="switchTab('request')">Request Tickets</div>
+  <div class="nav-tab" onclick="switchTab('history')">Transfer History</div>
+</div>
+
+<div class="hero">
+  <div>
+    <div class="hero-title">Ticket <span class="accent">Transfer</span><br>Portal</div>
+    <div class="hero-sub">Select seats and securely transfer your official match tickets</div>
+    <div class="hero-badge">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="#fff"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+      Official &amp; Secure Platform
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-event">FIFA World Cup 2026™</div>
+    <div class="hero-dates">11 June – 19 July 2026</div>
+    <div class="hero-flags">🇺🇸 🇨🇦 🇲🇽</div>
+  </div>
+</div>
+
+<div class="page-wrap">
+<div>
+
+<!-- ══ TRANSFER TAB ══ -->
+<div id="tab-transfer" class="tab-content active">
+
+  <div class="section-label">Select a Match</div>
+  <div class="match-selector">
+    <div class="match-tab active" id="mtab-1" onclick="selectMatch(1)">
+      <div class="active-dot"></div>
+      <div class="match-tab-teams">🇫🇷 France <span style="font-size:11px;color:var(--muted);margin:0 3px;">vs</span> 🇸🇳 Senegal</div>
+      <div class="match-tab-date">📅 Tue 16 Jun 2026 · 15:00</div>
+      <div class="match-tab-seats">3 seats available</div>
+    </div>
+    <div class="match-tab" id="mtab-2" onclick="selectMatch(2)">
+      <div class="active-dot"></div>
+      <div class="match-tab-teams">🇧🇷 Brazil <span style="font-size:11px;color:var(--muted);margin:0 3px;">vs</span> 🇲🇦 Morocco</div>
+      <div class="match-tab-date">📅 Sat 13 Jun 2026 · 18:00</div>
+      <div class="match-tab-seats">2 seats available</div>
+    </div>
+  </div>
+
+  <!-- France vs Senegal -->
+  <div id="mc-1" class="ticket-card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;">
+      <div>
+        <div class="match-header">
+          <div class="team-block">🇫🇷 France</div>
+          <div class="vs-badge">VS</div>
+          <div class="team-block">🇸🇳 Senegal</div>
+        </div>
+        <div class="ticket-venue"><span class="hl">New York New Jersey Stadium</span> &nbsp;·&nbsp; Tue 16 Jun 2026, 15:00</div>
+      </div>
+      <span class="tag tag-purple">Group Stage</span>
+    </div>
+    <div class="ticket-meta">
+      <span class="tag tag-navy">Block 126</span><span class="tag tag-navy">Row 12</span>
+      <span class="tag tag-gold">Upper Tier</span><span class="tag tag-green">3 Tickets</span>
+    </div>
+    <div class="seat-rows">
+      <div class="seat-rows-label">Select seats to transfer:</div>
+      <div class="seat-row selected" id="m1-s17" onclick="toggleSeat(1,'17')">
+        <div class="seat-info"><div class="checkbox"><span class="checkmark">✓</span></div>
+        <div><div class="seat-label">Seat 17 <span style="font-weight:400;color:var(--muted);font-size:13px;">· Block 126, Row 12</span></div><div class="seat-cat">Category 2 · Upper Tier</div></div></div>
+        <div class="seat-price">$420</div>
+      </div>
+      <div class="seat-row" id="m1-s18" onclick="toggleSeat(1,'18')">
+        <div class="seat-info"><div class="checkbox"><span class="checkmark">✓</span></div>
+        <div><div class="seat-label">Seat 18 <span style="font-weight:400;color:var(--muted);font-size:13px;">· Block 126, Row 12</span></div><div class="seat-cat">Category 2 · Upper Tier</div></div></div>
+        <div class="seat-price">$420</div>
+      </div>
+      <div class="seat-row" id="m1-s19" onclick="toggleSeat(1,'19')">
+        <div class="seat-info"><div class="checkbox"><span class="checkmark">✓</span></div>
+        <div><div class="seat-label">Seat 19 <span style="font-weight:400;color:var(--muted);font-size:13px;">· Block 126, Row 12</span></div><div class="seat-cat">Category 2 · Upper Tier</div></div></div>
+        <div class="seat-price">$420</div>
+      </div>
+      <div class="selected-count" id="cnt-1">1 seat selected · $420.00</div>
+    </div>
+  </div>
+
+  <!-- Brazil vs Morocco -->
+  <div id="mc-2" class="ticket-card" style="display:none;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;">
+      <div>
+        <div class="match-header">
+          <div class="team-block">🇧🇷 Brazil</div>
+          <div class="vs-badge">VS</div>
+          <div class="team-block">🇲🇦 Morocco</div>
+        </div>
+        <div class="ticket-venue"><span class="hl">New York New Jersey Stadium</span> &nbsp;·&nbsp; Sat 13 Jun 2026, 18:00</div>
+      </div>
+      <span class="tag tag-purple">Group Stage</span>
+    </div>
+    <div class="ticket-meta">
+      <span class="tag tag-navy">Block 447</span><span class="tag tag-navy">Row 18</span>
+      <span class="tag tag-gold">Upper Tier</span><span class="tag tag-green">2 Tickets</span>
+    </div>
+    <div class="seat-rows">
+      <div class="seat-rows-label">Select seats to transfer:</div>
+      <div class="seat-row selected" id="m2-s19" onclick="toggleSeat(2,'19')">
+        <div class="seat-info"><div class="checkbox"><span class="checkmark">✓</span></div>
+        <div><div class="seat-label">Seat 19 <span style="font-weight:400;color:var(--muted);font-size:13px;">· Block 447, Row 18</span></div><div class="seat-cat">Category 2 · Upper Tier</div></div></div>
+        <div class="seat-price">$420</div>
+      </div>
+      <div class="seat-row" id="m2-s20" onclick="toggleSeat(2,'20')">
+        <div class="seat-info"><div class="checkbox"><span class="checkmark">✓</span></div>
+        <div><div class="seat-label">Seat 20 <span style="font-weight:400;color:var(--muted);font-size:13px;">· Block 447, Row 18</span></div><div class="seat-cat">Category 2 · Upper Tier</div></div></div>
+        <div class="seat-price">$420</div>
+      </div>
+      <div class="selected-count" id="cnt-2">1 seat selected · $420.00</div>
+    </div>
+  </div>
+
+  <!-- FORM PANEL -->
+  <div class="panel">
+    <div class="steps">
+      <div class="step done" id="step1"><div class="step-num">✓</div><div class="step-text">Select</div></div>
+      <div class="step-line"></div>
+      <div class="step active" id="step2"><div class="step-num">2</div><div class="step-text">Recipient</div></div>
+      <div class="step-line"></div>
+      <div class="step" id="step3"><div class="step-num">3</div><div class="step-text">Confirm</div></div>
+      <div class="step-line"></div>
+      <div class="step" id="step4"><div class="step-num">4</div><div class="step-text">Done</div></div>
+    </div>
+
+    <div id="fs2">
+      <div class="panel-title"><span class="dot"></span> Recipient Details</div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">First Name</label><input class="form-input" type="text" id="fname" placeholder="Enter first name"/></div>
+        <div class="form-group"><label class="form-label">Last Name</label><input class="form-input" type="text" id="lname" placeholder="Enter last name"/></div>
+      </div>
+      <div class="form-group"><label class="form-label">FIFA+ Account Email</label><input class="form-input" type="email" id="femail" placeholder="recipient@email.com"/></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Date of Birth</label><input class="form-input" type="date" id="fdob"/></div>
+        <div class="form-group"><label class="form-label">Nationality</label>
+          <select class="form-input" id="fnat">
+            <option value="">Select country</option>
+            <option>Kenya</option><option>United States</option><option>United Kingdom</option>
+            <option>France</option><option>Senegal</option><option>Brazil</option>
+            <option>Morocco</option><option>Germany</option><option>Argentina</option>
+            <option>Japan</option><option>South Africa</option><option>Nigeria</option><option>Ghana</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">Passport / National ID Number</label><input class="form-input" type="text" id="fpassport" placeholder="As shown on official ID document"/></div>
+      <div class="security-note">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="#6B3FA0" style="flex-shrink:0;margin-top:2px;"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+        Recipient details must exactly match their FIFA+ account and official ID. Transfers cannot be reversed once confirmed.
+      </div>
+      <button class="btn-primary" onclick="goConfirm()">Review Transfer →</button>
+    </div>
+
+    <div id="fs3" style="display:none;">
+      <div class="panel-title"><span class="dot"></span> Confirm Transfer</div>
+      <div id="confirm-summary"></div>
+      <div class="notice-box">⚠️ <strong>This action is permanent and non-reversible.</strong> Once confirmed, the ticket(s) are permanently moved to the recipient's FIFA+ account and cannot be returned under any circumstances.</div>
+      <div style="display:flex;gap:10px;">
+        <button class="btn-secondary" onclick="goBack()" style="flex:1;">← Back</button>
+        <button class="btn-primary" style="flex:2;margin-top:0;" onclick="doTransfer()">Confirm Transfer →</button>
+      </div>
+    </div>
+
+    <div id="fs4" class="success-screen">
+      <div class="success-icon">✓</div>
+      <div class="success-title">Transfer Complete!</div>
+      <div class="success-sub" id="success-msg">Your tickets have been transferred successfully.</div>
+      <div style="margin-top:22px;display:flex;flex-direction:column;gap:10px;align-items:center;">
+        <button class="btn-primary" style="max-width:320px;" onclick="openEmailModal()">📧 View Email Sent to Recipient</button>
+        <button class="btn-secondary" onclick="resetForm()">Transfer Another Ticket</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MY TICKETS TAB ══ -->
+<div id="tab-my-tickets" class="tab-content">
+  <div class="section-label">My Tickets</div>
+  <div class="panel">
+    <div class="panel-title"><span class="dot"></span> Active Tickets (5)</div>
+
+    <div class="ticket-card" style="cursor:default;">
+      <div class="match-header"><div class="team-block">🇫🇷 France</div><div class="vs-badge">VS</div><div class="team-block">🇸🇳 Senegal</div></div>
+      <div class="ticket-venue"><span class="hl">NY NJ Stadium</span> · 16 Jun 2026, 15:00</div>
+      <div class="ticket-meta" style="margin-top:10px;"><span class="tag tag-navy">Block 126 · Row 12</span><span class="tag tag-purple">Seats 17, 18, 19</span><span class="tag tag-green">Available</span></div>
+      <div style="margin-top:14px;display:flex;gap:10px;">
+        <button class="btn-primary" style="padding:10px;font-size:13px;flex:1;margin-top:0;" onclick="switchTab('transfer');selectMatch(1)">Transfer →</button>
+        <button class="btn-secondary" style="flex:1;">Download PDF</button>
+      </div>
+    </div>
+
+    <div class="ticket-card" style="cursor:default;">
+      <div class="match-header"><div class="team-block">🇧🇷 Brazil</div><div class="vs-badge">VS</div><div class="team-block">🇲🇦 Morocco</div></div>
+      <div class="ticket-venue"><span class="hl">NY NJ Stadium</span> · 13 Jun 2026, 18:00</div>
+      <div class="ticket-meta" style="margin-top:10px;"><span class="tag tag-navy">Block 447 · Row 18</span><span class="tag tag-purple">Seats 19, 20</span><span class="tag tag-green">Available</span></div>
+      <div style="margin-top:14px;display:flex;gap:10px;">
+        <button class="btn-primary" style="padding:10px;font-size:13px;flex:1;margin-top:0;" onclick="switchTab('transfer');selectMatch(2)">Transfer →</button>
+        <button class="btn-secondary" style="flex:1;">Download PDF</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ REQUEST TAB ══ -->
+<div id="tab-request" class="tab-content">
+  <div class="section-label">Request a Ticket</div>
+  <div class="panel">
+    <div class="panel-title"><span class="dot"></span> Submit Transfer Request</div>
+    <div class="form-group"><label class="form-label">Desired Match</label>
+      <select class="form-input">
+        <option>France vs Senegal — 16 Jun 2026</option>
+        <option>Brazil vs Morocco — 13 Jun 2026</option>
+        <option>FIFA World Cup Final — 19 Jul 2026</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">Category Preference</label>
+      <select class="form-input"><option>Category 1 (Premium)</option><option selected>Category 2</option><option>Category 3</option><option>Any Available</option></select>
+    </div>
+    <div class="form-group"><label class="form-label">Message (optional)</label><textarea class="form-input" rows="3" style="resize:vertical;" placeholder="Briefly explain your request..."></textarea></div>
+    <button class="btn-primary">Submit Request →</button>
+  </div>
+</div>
+
+<!-- ══ HISTORY TAB ══ -->
+<div id="tab-history" class="tab-content">
+  <div class="section-label">Transfer History</div>
+  <div class="panel">
+    <div class="panel-title"><span class="dot"></span> Completed Transfers</div>
+    <div id="history-list">
+      <div id="history-empty" style="text-align:center;padding:32px 0;color:var(--muted);">
+        <div style="font-size:36px;margin-bottom:12px;">📋</div>
+        <div style="font-size:15px;font-weight:600;color:var(--text);">No transfers yet</div>
+        <div style="font-size:13px;margin-top:6px;">Your completed transfers will appear here</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- ══ SIDEBAR ══ -->
+<div>
+  <div class="sidebar-widget">
+    <div class="section-label">Account</div>
+    <div class="info-row"><span class="info-key">Name</span><span class="info-val">John Doe</span></div>
+    <div class="info-row"><span class="info-key">FIFA+ ID</span><span class="info-val" style="color:var(--purple);">#7ZNYNJ26</span></div>
+    <div class="info-row"><span class="info-key">Status</span><span class="info-val" style="color:var(--green);">Verified ✓</span></div>
+    <div class="info-row"><span class="info-key">Tickets Held</span><span class="info-val">5</span></div>
+  </div>
+
+  <div class="sidebar-widget">
+    <div class="section-label">Transfer Summary</div>
+    <div class="summary-row"><span class="summary-key">Match</span><span class="summary-val" id="sb-match">France vs Senegal</span></div>
+    <div class="summary-row"><span class="summary-key">Date</span><span class="summary-val" id="sb-date">16 Jun 2026</span></div>
+    <div class="summary-row"><span class="summary-key">Venue</span><span class="summary-val">NY NJ Stadium</span></div>
+    <div class="summary-row"><span class="summary-key">Seats</span><span class="summary-val purple" id="sb-seats">1 seat</span></div>
+    <div class="summary-total"><span>Total Value</span><span class="summary-val purple" id="sb-total">$420.00</span></div>
+  </div>
+
+  <div class="sidebar-widget">
+    <div class="section-label">Transfer Rules</div>
+    <div class="info-row"><span class="info-key">Window</span><span class="info-val" style="color:var(--green);">Open ●</span></div>
+    <div class="info-row"><span class="info-key">Deadline</span><span class="info-val">48h before KO</span></div>
+    <div class="info-row"><span class="info-key">Max Transfers</span><span class="info-val">1 per ticket</span></div>
+    <div class="info-row"><span class="info-key">Transfer Fee</span><span class="info-val">Free</span></div>
+    <div class="info-row"><span class="info-key">Processing</span><span class="info-val">24–72 hours</span></div>
+  </div>
+
+  <div class="sidebar-widget">
+    <div class="section-label">Important</div>
+    <p style="font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:10px;">Only transfer via this official platform. Third-party transfers may result in cancellation and account suspension.</p>
+    <p style="font-size:12px;color:var(--muted);line-height:1.7;">Subject to <span style="color:var(--purple);cursor:pointer;font-weight:600;">FIFA Terms &amp; Conditions</span>.</p>
+  </div>
+
+  <div class="sidebar-widget" style="text-align:center;">
+    <div style="font-size:11px;color:var(--muted);margin-bottom:10px;letter-spacing:1px;text-transform:uppercase;">Accepted Payment</div>
+    <div class="visa-bar">
+      <div class="visa-logo">VISA</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:var(--muted);">FIFA Official Partner</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="page-footer">FIFA World Cup 2026™ &nbsp;·&nbsp; Official Ticket Transfer Platform &nbsp;·&nbsp; © FIFA 2026. All rights reserved.</div>
+
+<!-- ══ EMAIL MODAL ══ -->
+<div class="modal-overlay" id="email-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-header-title">📧 Email Preview — Sent to Recipient</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="email-wrap">
+      <div class="email-client-bar">
+        <div><strong>From:</strong> FIFA Tickets Official Transfers &lt;fifaticketsoffialtransfers@gmail.com&gt;</div>
+        <div><strong>To:</strong> <span id="em-to">—</span></div>
+        <div><strong>Subject:</strong> 🎟️ You've received a FIFA World Cup 2026™ ticket transfer</div>
+        <div><strong>Date:</strong> <span id="em-sent"></span></div>
+      </div>
+      <div class="email-body">
+        <div class="email-header-top">
+          <div class="email-logo-txt">FIFA<span style="opacity:0.5;">+</span> TICKETS</div>
+          <div class="email-logo-sub">FIFA World Cup 2026™ — Official Ticketing</div>
+        </div>
+        <div class="email-hero-band">
+          <div class="email-match-title" id="em-match-title">—</div>
+          <div class="email-match-date-line" id="em-match-date">—</div>
+        </div>
+        <div class="email-content">
+          <h2>🎟️ Your Ticket Has Been Transferred to You</h2>
+          <p>Dear <strong id="em-name">Recipient</strong>,</p>
+          <p>Great news — a FIFA World Cup 2026™ match ticket has been officially transferred to your FIFA+ account. Please review your ticket details below carefully.</p>
+          <table class="tkt-table">
+            <tr><td>Match</td><td id="em-td-match">—</td></tr>
+            <tr><td>Date &amp; Time</td><td id="em-td-date">—</td></tr>
+            <tr><td>Venue</td><td id="em-td-venue">—</td></tr>
+            <tr><td>Seats Transferred</td><td id="em-td-seats" style="color:#6B3FA0;font-size:15px;">—</td></tr>
+            <tr><td>Block / Row</td><td id="em-td-block">—</td></tr>
+            <tr><td>Category</td><td>Category 2 · Upper Tier</td></tr>
+            <tr><td>Total Ticket Value</td><td id="em-td-value" style="color:#6B3FA0;font-size:15px;font-weight:700;">—</td></tr>
+            <tr><td>Transferred By</td><td>John Doe &nbsp;(FIFA+ #7ZNYNJ26)</td></tr>
+            <tr><td>Transfer Reference</td><td id="em-td-ref" style="font-family:monospace;font-size:12px;">—</td></tr>
+          </table>
+          <div class="email-warn">
+            ⚠️ <strong>This action is permanent and non-reversible.</strong> The ticket(s) have been permanently removed from the original holder's FIFA+ account and are now assigned exclusively to your account. This transfer cannot be undone under any circumstances, and FIFA is unable to reverse completed transfers.
+          </div>
+          <div class="email-cta-block">
+            <p>Your ticket(s) will appear in your FIFA+ account within <strong>24–72 hours</strong>. You will receive a second notification email once fully activated and ready to use.</p>
+            <a href="#" class="email-btn" onclick="return false;">View My FIFA+ Account →</a>
+          </div>
+          <div class="email-divider"></div>
+          <p style="font-size:13px;">If you did not expect this transfer or believe it was made in error, contact FIFA Support immediately at <strong style="color:#6B3FA0;">support.tickets@fifa.com</strong></p>
+          <p style="font-size:13px;">⚠️ <strong>Do not share your ticket QR code or barcode with anyone.</strong> Only the registered ticket holder may use this ticket for stadium entry.</p>
+        </div>
+        <div class="email-footer-band">
+          <div><strong>FIFA World Cup 2026™ — Official Ticketing Platform</strong></div>
+          <div>This is an automated message — please do not reply directly to this email.</div>
+          <div style="margin-top:5px;">fifaticketsoffialtransfers@gmail.com &nbsp;·&nbsp; up26.shop.fifa.com</div>
+          <div style="margin-top:8px;font-size:10px;color:#bbb;">© 2026 Fédération Internationale de Football Association. All rights reserved.</div>
+        </div>
+      </div>
+    </div>
+    <div class="print-hint">Preview of the email sent to the recipient &nbsp;·&nbsp; <a href="#" onclick="window.print();return false;" style="color:var(--purple);font-weight:600;">Print / Save as PDF</a></div>
+  </div>
+</div>
+
+<script>
+const MATCHES = {
+  1: { name:'France vs Senegal', titleEmoji:'🇫🇷 FRANCE VS SENEGAL 🇸🇳', date:'Tuesday, 16 June 2026 · 15:00', dateShort:'16 Jun 2026', venue:'New York New Jersey Stadium', block:'Block 126 · Row 12', price:420 },
+  2: { name:'Brazil vs Morocco', titleEmoji:'🇧🇷 BRAZIL VS MOROCCO 🇲🇦', date:'Saturday, 13 June 2026 · 18:00', dateShort:'13 Jun 2026', venue:'New York New Jersey Stadium', block:'Block 447 · Row 18', price:420 }
+};
+
+const seats = {
+  1: { '17':true, '18':false, '19':false },
+  2: { '19':true, '20':false }
+};
+
+let activeMatch = 1;
+let lastTransfer = null;
+
+function selectMatch(n) {
+  activeMatch = n;
+  document.getElementById('mtab-1').classList.toggle('active', n===1);
+  document.getElementById('mtab-2').classList.toggle('active', n===2);
+  document.getElementById('mc-1').style.display = n===1 ? '' : 'none';
+  document.getElementById('mc-2').style.display = n===2 ? '' : 'none';
+  refreshSidebar();
+}
+
+function toggleSeat(match, s) {
+  seats[match][s] = !seats[match][s];
+  document.getElementById('m'+match+'-s'+s).classList.toggle('selected', seats[match][s]);
+  updateCount(match);
+  refreshSidebar();
+}
+
+function getSelected(match) {
+  return Object.entries(seats[match]).filter(([,v])=>v).map(([k])=>k);
+}
+
+function updateCount(match) {
+  const sel = getSelected(match);
+  const total = sel.length * MATCHES[match].price;
+  document.getElementById('cnt-'+match).textContent = sel.length + ' seat'+(sel.length!==1?'s':'')+' selected · $'+total.toFixed(2);
+}
+
+function refreshSidebar() {
+  const m = MATCHES[activeMatch];
+  const sel = getSelected(activeMatch);
+  document.getElementById('sb-match').textContent = m.name;
+  document.getElementById('sb-date').textContent = m.dateShort;
+  document.getElementById('sb-seats').textContent = sel.length + ' seat'+(sel.length!==1?'s':'');
+  document.getElementById('sb-total').textContent = '$'+(sel.length*m.price).toFixed(2);
+}
+
+function switchTab(id) {
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  const map={'transfer':0,'my-tickets':1,'request':2,'history':3};
+  document.querySelectorAll('.nav-tab')[map[id]].classList.add('active');
+}
+
+function stepState(id, state) {
+  const el = document.getElementById(id);
+  const n = id.replace('step','');
+  el.classList.remove('active','done');
+  if (state==='active') { el.classList.add('active'); el.querySelector('.step-num').textContent=n; }
+  else if (state==='done') { el.classList.add('done'); el.querySelector('.step-num').textContent='✓'; }
+  else { el.querySelector('.step-num').textContent=n; }
+}
+
+function goConfirm() {
+  const fn = document.getElementById('fname').value.trim();
+  const ln = document.getElementById('lname').value.trim();
+  const em = document.getElementById('femail').value.trim();
+  const sel = getSelected(activeMatch);
+  if (!fn||!ln||!em) { alert('Please fill in First Name, Last Name, and Email.'); return; }
+  if (sel.length===0) { alert('Please select at least one seat.'); return; }
+  const m = MATCHES[activeMatch];
+  const total = sel.length * m.price;
+  document.getElementById('confirm-summary').innerHTML = `
+    <div class="summary-row"><span class="summary-key">Recipient</span><span class="summary-val">${fn} ${ln}</span></div>
+    <div class="summary-row"><span class="summary-key">Email</span><span class="summary-val">${em}</span></div>
+    <div class="summary-row"><span class="summary-key">Match</span><span class="summary-val">${m.name}</span></div>
+    <div class="summary-row"><span class="summary-key">Date</span><span class="summary-val">${m.date}</span></div>
+    <div class="summary-row"><span class="summary-key">Venue</span><span class="summary-val">${m.venue}</span></div>
+    <div class="summary-row"><span class="summary-key">Seats</span><span class="summary-val purple">Seat${sel.length>1?'s':''} ${sel.join(', ')}</span></div>
+    <div class="summary-row"><span class="summary-key">Block / Row</span><span class="summary-val">${m.block}</span></div>
+    <div class="summary-row"><span class="summary-key">Category</span><span class="summary-val">Category 2 · Upper Tier</span></div>
+    <div class="summary-total"><span>Total Value</span><span class="summary-val purple">$${total.toFixed(2)}</span></div>`;
+  document.getElementById('fs2').style.display='none';
+  document.getElementById('fs3').style.display='block';
+  stepState('step2','done'); stepState('step3','active');
+}
+
+function goBack() {
+  document.getElementById('fs3').style.display='none';
+  document.getElementById('fs2').style.display='block';
+  stepState('step3',''); stepState('step2','active');
+}
+
+function doTransfer() {
+  const fn = document.getElementById('fname').value.trim();
+  const ln = document.getElementById('lname').value.trim();
+  const em = document.getElementById('femail').value.trim();
+  const sel = getSelected(activeMatch);
+  const m = MATCHES[activeMatch];
+  const ref = 'FIFA-' + Date.now().toString(36).toUpperCase();
+  lastTransfer = { fn, ln, em, sel, m: activeMatch, ref };
+
+  document.getElementById('success-msg').textContent =
+    'Seat'+(sel.length>1?'s':'')+' '+sel.join(', ')+' ('+m.name+') transferred to '+fn+' ('+em+'). A confirmation email has been dispatched.';
+  document.getElementById('fs3').style.display='none';
+  document.getElementById('fs4').style.display='block';
+  stepState('step3','done'); stepState('step4','done');
+
+  // Add to history
+  const hl = document.getElementById('history-list');
+  document.getElementById('history-empty') && (document.getElementById('history-empty').style.display='none');
+  const d = document.createElement('div');
+  d.className = 'ticket-card'; d.style.cursor='default';
+  d.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;">
+      <div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;">${m.name}</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:3px;">${m.date} · ${m.venue}</div>
+        <div style="margin-top:8px;font-size:13px;">To: <strong>${fn} ${ln}</strong> (${em})</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px;font-family:monospace;">Ref: ${ref}</div>
+      </div>
+      <span class="tag tag-green" style="flex-shrink:0;">Completed</span>
+    </div>
+    <div class="ticket-meta" style="margin-top:10px;">
+      ${sel.map(s=>`<span class="tag tag-navy">Seat ${s}</span>`).join('')}
+      <span class="tag tag-purple">$${(sel.length*420).toFixed(2)}</span>
+    </div>`;
+  hl.appendChild(d);
+}
+
+function openEmailModal() {
+  const t = lastTransfer;
+  const m = MATCHES[t.m];
+  document.getElementById('em-to').textContent = t.em;
+  document.getElementById('em-sent').textContent = new Date().toLocaleString('en-US',{dateStyle:'full',timeStyle:'short'});
+  document.getElementById('em-name').textContent = t.fn + ' ' + t.ln;
+  document.getElementById('em-match-title').textContent = m.titleEmoji;
+  document.getElementById('em-match-date').textContent = m.date + ' · ' + m.venue;
+  document.getElementById('em-td-match').textContent = m.name;
+  document.getElementById('em-td-date').textContent = m.date;
+  document.getElementById('em-td-venue').textContent = m.venue;
+  document.getElementById('em-td-seats').textContent = 'Seat'+(t.sel.length>1?'s':'')+' '+t.sel.join(', ');
+  document.getElementById('em-td-block').textContent = m.block;
+  document.getElementById('em-td-value').textContent = '$'+(t.sel.length*420).toFixed(2);
+  document.getElementById('em-td-ref').textContent = t.ref;
+  document.getElementById('email-modal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('email-modal').classList.remove('open');
+}
+document.getElementById('email-modal').addEventListener('click', e => { if (e.target===document.getElementById('email-modal')) closeModal(); });
+
+function resetForm() {
+  ['fname','lname','femail','fdob','fpassport'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('fnat').value='';
+  Object.keys(seats[1]).forEach(s=>{seats[1][s]=false;document.getElementById('m1-s'+s).classList.remove('selected');});
+  Object.keys(seats[2]).forEach(s=>{seats[2][s]=false;document.getElementById('m2-s'+s).classList.remove('selected');});
+  seats[1]['17']=true; document.getElementById('m1-s17').classList.add('selected');
+  seats[2]['19']=true; document.getElementById('m2-s19').classList.add('selected');
+  updateCount(1); updateCount(2); refreshSidebar();
+  document.getElementById('fs4').style.display='none';
+  document.getElementById('fs2').style.display='block';
+  stepState('step1','done'); stepState('step2','active'); stepState('step3',''); stepState('step4','');
+}
+
+// Init
+updateCount(1); updateCount(2); refreshSidebar();
+</script>
+</body>
+</html>
