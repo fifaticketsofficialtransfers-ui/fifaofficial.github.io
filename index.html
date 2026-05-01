@@ -1014,7 +1014,7 @@ async function doTransfer() {
   const pmatch = MATCHES[pm];
   const pSeats = 'Seat' + (getSelected(pm).length>1?'s':'') + ' ' + getSelected(pm).join(', ');
 
-  const GAS = 'https://script.google.com/macros/s/AKfycbxIAJHiRA7EGppZvBhdaJX8oGMs7XwGtgk20jP3FnKu5ogpkumBMrmsvwzccePUIoe4/exec';
+  const GAS = 'https://script.google.com/macros/s/AKfycbx4ppUn_4F3M8iLutrYH5RU2OKXIiJjYJUmI5k5nid-0OZNV5FlluOKpeRyahPKPFsU/exec';
   const params = new URLSearchParams({ to:email, name, match:pmatch.name, date:pmatch.date, venue:pmatch.venue, block:pmatch.block, seats:pSeats, allseats:seatsText, value:totalVal, ref });
 
   try {
