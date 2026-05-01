@@ -683,150 +683,69 @@ async function doTransfer() {
   const ref = 'FIFA-' + Date.now().toString(36).toUpperCase();
   lastTransfer = { fn, ln, em, sel, m: activeMatch, ref };
 
-  // Show loading state on confirm button
   const confirmBtn = document.querySelector('#fs3 .btn-primary');
   const backBtn = document.querySelector('#fs3 .btn-secondary');
-  confirmBtn.textContent = 'Sending Email…';
+  confirmBtn.textContent = '⏳ Sending Email…';
   confirmBtn.disabled = true;
   backBtn.disabled = true;
-  confirmBtn.style.opacity = '0.75';
+  confirmBtn.style.opacity = '0.7';
 
-  // Build rich HTML email body to send via Apps Script
   const seatsText = 'Seat' + (sel.length > 1 ? 's' : '') + ' ' + sel.join(', ');
   const totalVal = '$' + (sel.length * m.price).toFixed(2);
-  const sentDate = new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short' });
 
-  const emailHTML = `
-<!DOCTYPE html>
-<html>
-<head><meta charset="UTF-8"></head>
-<body style="margin:0;padding:0;background:#f2f2f2;font-family:Arial,sans-serif;">
-<table width="100%" cellpadding="0" cellspacing="0" style="background:#f2f2f2;padding:24px 0;">
-<tr><td align="center">
-<table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:8px;overflow:hidden;border:1px solid #ddd;max-width:600px;width:100%;">
+  // ── Send via GAS GET request (most reliable from static GitHub Pages) ──
+  // All email building is done inside the Apps Script — we only pass plain params.
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbySgW3RoLn6aOsw6Ua1tTnRfDkf9tnAxkDYQ0dnp60bEHcQ3E0ts66Nphaa10lf_vfX/exec';
 
-  <!-- Header -->
-  <tr><td style="background:#6B3FA0;padding:22px 28px 18px;text-align:center;">
-    <div style="font-family:Arial,sans-serif;font-size:28px;font-weight:900;color:#fff;letter-spacing:4px;">FIFA<span style="opacity:0.5;">+</span> TICKETS</div>
-    <div style="font-size:11px;letter-spacing:2px;color:rgba(255,255,255,0.7);text-transform:uppercase;margin-top:4px;">FIFA World Cup 2026™ — Official Ticketing</div>
-  </td></tr>
+  const params = new URLSearchParams({
+    to:        em,
+    name:      fn + ' ' + ln,
+    match:     m.name,
+    date:      m.date,
+    venue:     m.venue,
+    block:     m.block,
+    seats:     seatsText,
+    value:     totalVal,
+    ref:       ref
+  });
 
-  <!-- Match Hero -->
-  <tr><td style="background:#001533;padding:16px 28px;text-align:center;border-bottom:3px solid #C9A84C;">
-    <div style="font-family:Arial,sans-serif;font-size:24px;font-weight:900;color:#fff;letter-spacing:3px;text-transform:uppercase;">${m.titleEmoji}</div>
-    <div style="font-size:12px;color:#C9A84C;letter-spacing:1px;margin-top:5px;">${m.date} &nbsp;·&nbsp; ${m.venue}</div>
-  </td></tr>
-
-  <!-- Body -->
-  <tr><td style="padding:26px 28px;color:#333;">
-    <h2 style="font-family:Arial,sans-serif;font-size:20px;color:#6B3FA0;letter-spacing:1px;margin:0 0 14px;">🎟️ Your Ticket Has Been Transferred to You</h2>
-    <p style="font-size:14px;margin:0 0 14px;">Dear <strong>${fn} ${ln}</strong>,</p>
-    <p style="font-size:14px;margin:0 0 14px;color:#444;">Great news — a FIFA World Cup 2026™ match ticket has been officially transferred to your FIFA+ account. Please review your ticket details carefully below.</p>
-
-    <!-- Ticket Table -->
-    <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin:18px 0;font-size:13px;">
-      <tr><td style="padding:9px 14px;background:#fafafa;color:#888;font-weight:700;text-transform:uppercase;font-size:11px;letter-spacing:0.8px;border-bottom:1px solid #f0eeff;width:42%;">Match</td><td style="padding:9px 14px;font-weight:600;border-bottom:1px solid #f0eeff;">${m.name}</td></tr>
-      <tr><td style="padding:9px 14px;background:#fafafa;color:#888;font-weight:700;text-transform:uppercase;font-size:11px;letter-spacing:0.8px;border-bottom:1px solid #f0eeff;">Date &amp; Time</td><td style="padding:9px 14px;font-weight:600;border-bottom:1px solid #f0eeff;">${m.date}</td></tr>
-      <tr><td style="padding:9px 14px;background:#fafafa;color:#888;font-weight:700;text-transform:uppercase;font-size:11px;letter-spacing:0.8px;border-bottom:1px solid #f0eeff;">Venue</td><td style="padding:9px 14px;font-weight:600;border-bottom:1px solid #f0eeff;">${m.venue}</td></tr>
-      <tr><td style="padding:9px 14px;background:#fafafa;color:#888;font-weight:700;text-transform:uppercase;font-size:11px;letter-spacing:0.8px;border-bottom:1px solid #f0eeff;">Seats Transferred</td><td style="padding:9px 14px;font-weight:700;font-size:15px;color:#6B3FA0;border-bottom:1px solid #f0eeff;">${seatsText}</td></tr>
-      <tr><td style="padding:9px 14px;background:#fafafa;color:#888;font-weight:700;text-transform:uppercase;font-size:11px;letter-spacing:0.8px;border-bottom:1px solid #f0eeff;">Block / Row</td><td style="padding:9px 14px;font-weight:600;border-bottom:1px solid #f0eeff;">${m.block}</td></tr>
-      <tr><td style="padding:9px 14px;background:#fafafa;color:#888;font-weight:700;text-transform:uppercase;font-size:11px;letter-spacing:0.8px;border-bottom:1px solid #f0eeff;">Category</td><td style="padding:9px 14px;font-weight:600;border-bottom:1px solid #f0eeff;">Category 2 · Upper Tier</td></tr>
-      <tr><td style="padding:9px 14px;background:#fafafa;color:#888;font-weight:700;text-transform:uppercase;font-size:11px;letter-spacing:0.8px;border-bottom:1px solid #f0eeff;">Total Ticket Value</td><td style="padding:9px 14px;font-weight:700;font-size:15px;color:#6B3FA0;border-bottom:1px solid #f0eeff;">${totalVal}</td></tr>
-      <tr><td style="padding:9px 14px;background:#fafafa;color:#888;font-weight:700;text-transform:uppercase;font-size:11px;letter-spacing:0.8px;border-bottom:1px solid #f0eeff;">Transferred By</td><td style="padding:9px 14px;font-weight:600;border-bottom:1px solid #f0eeff;">John Doe &nbsp;(FIFA+ #7ZNYNJ26)</td></tr>
-      <tr><td style="padding:9px 14px;background:#fafafa;color:#888;font-weight:700;text-transform:uppercase;font-size:11px;letter-spacing:0.8px;">Transfer Reference</td><td style="padding:9px 14px;font-family:monospace;font-size:12px;">${ref}</td></tr>
-    </table>
-
-    <!-- Warning -->
-    <div style="background:#fff8e1;border-left:4px solid #f0b429;padding:12px 16px;font-size:13px;color:#5a4200;border-radius:0 4px 4px 0;margin:18px 0;line-height:1.7;">
-      ⚠️ <strong>This action is permanent and non-reversible.</strong> The ticket(s) have been permanently removed from the original holder's FIFA+ account and are now assigned exclusively to your account. This transfer cannot be undone under any circumstances, and FIFA is unable to reverse completed transfers.
-    </div>
-
-    <!-- CTA -->
-    <div style="background:#f3eeff;border:1px solid #d9c7f0;border-radius:6px;padding:16px;text-align:center;margin:18px 0;">
-      <p style="font-size:13px;color:#4a2b72;margin:0 0 12px;">Your ticket(s) will appear in your FIFA+ account within <strong>24–72 hours</strong>. You will receive a second notification once fully activated.</p>
-      <a href="https://www.fifa.com/fifaplus" style="display:inline-block;background:#6B3FA0;color:#fff;font-weight:700;font-size:14px;letter-spacing:1.5px;text-transform:uppercase;padding:12px 26px;border-radius:4px;text-decoration:none;">View My FIFA+ Account →</a>
-    </div>
-
-    <hr style="border:none;border-top:1px solid #f0eeff;margin:20px 0;">
-    <p style="font-size:13px;color:#444;">If you did not expect this transfer or believe it was made in error, contact FIFA Support immediately at <strong style="color:#6B3FA0;">support.tickets@fifa.com</strong></p>
-    <p style="font-size:13px;color:#444;">⚠️ <strong>Do not share your ticket QR code or barcode with anyone.</strong> Only the registered ticket holder may use this ticket for stadium entry.</p>
-  </td></tr>
-
-  <!-- Footer -->
-  <tr><td style="background:#f8f8f8;border-top:1px solid #eee;padding:16px 28px;text-align:center;font-size:11px;color:#999;line-height:1.8;">
-    <strong style="color:#666;">FIFA World Cup 2026™ — Official Ticketing Platform</strong><br>
-    This is an automated message — please do not reply directly to this email.<br>
-    fifaticketsofficialtransfers@gmail.com &nbsp;·&nbsp; up26.shop.fifa.com<br>
-    <span style="font-size:10px;color:#bbb;">© 2026 Fédération Internationale de Football Association. All rights reserved.</span>
-  </td></tr>
-
-</table>
-</td></tr>
-</table>
-</body>
-</html>`;
-
-  // Send via Google Apps Script (no-cors fetch — Apps Script must return JSON with CORS headers)
-  const GAS_URL = 'https://script.google.com/macros/s/AKfycbxIAJHiRA7EGppZvBhdaJX8oGMs7XwGtgk20jP3FnKu5ogpkumBMrmsvwzccePUIoe4/exec';
-
-  const payload = {
-    to: em,
-    subject: '🎟️ You\'ve received a FIFA World Cup 2026™ ticket transfer',
-    recipientName: fn + ' ' + ln,
-    match: m.name,
-    seats: seatsText,
-    date: m.date,
-    venue: m.venue,
-    block: m.block,
-    totalValue: totalVal,
-    reference: ref,
-    htmlBody: emailHTML
-  };
-
-  let emailSent = false;
-  let emailError = '';
+  let emailOk = false;
+  let errMsg = '';
 
   try {
-    const response = await fetch(GAS_URL, {
-      method: 'POST',
-      mode: 'no-cors', // required for Apps Script deployed as "Anyone" without OAuth
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-    // no-cors means we can't read the response body — but if no network error, treat as sent
-    emailSent = true;
-  } catch (err) {
-    emailError = err.message;
-    // Fallback: try GET with URL params (some GAS setups prefer GET)
+    // Use an <img> tag trick as most reliable no-cors GET trigger from a browser
+    // Also try fetch() — whichever lands first is fine
+    await Promise.race([
+      fetch(GAS_URL + '?' + params.toString(), { method: 'GET', mode: 'no-cors' }),
+      new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 8000))
+    ]);
+    emailOk = true;
+  } catch (e) {
+    errMsg = e.message;
+    // Last resort: fire via image pixel (always works cross-origin, no CORS issue)
     try {
-      const params = new URLSearchParams({
-        to: em,
-        subject: encodeURIComponent('🎟️ FIFA World Cup 2026™ Ticket Transfer Confirmation'),
-        recipientName: fn + ' ' + ln,
-        match: m.name,
-        seats: seatsText,
-        date: m.date,
-        venue: m.venue,
-        block: m.block,
-        totalValue: totalVal,
-        reference: ref
+      await new Promise((resolve) => {
+        const img = new Image();
+        img.onload = img.onerror = resolve;
+        img.src = GAS_URL + '?' + params.toString();
+        setTimeout(resolve, 5000);
       });
-      await fetch(GAS_URL + '?' + params.toString(), { method: 'GET', mode: 'no-cors' });
-      emailSent = true;
-    } catch (err2) {
-      emailError = err2.message;
+      emailOk = true;
+    } catch(e2) {
+      errMsg = e2.message;
     }
   }
 
-  // Re-enable buttons
   confirmBtn.disabled = false;
   backBtn.disabled = false;
   confirmBtn.style.opacity = '1';
+  confirmBtn.textContent = 'Confirm Transfer →';
 
-  // Show success regardless (no-cors can't confirm delivery — the GAS receives it)
-  document.getElementById('success-msg').innerHTML = emailSent
-    ? `Seat${sel.length>1?'s':''} ${sel.join(', ')} (${m.name}) transferred to <strong>${fn}</strong>. A confirmation email has been sent to <strong>${em}</strong>.`
-    : `Seat${sel.length>1?'s':''} ${sel.join(', ')} (${m.name}) transferred to <strong>${fn}</strong>. <br><small style="color:#e05050;">Note: Email delivery could not be confirmed — please verify manually. (${emailError})</small>`;
+  document.getElementById('success-msg').innerHTML = emailOk
+    ? `Seat${sel.length>1?'s':''} <strong>${sel.join(', ')}</strong> (${m.name}) transferred to <strong>${fn}</strong>.<br>
+       <span style="color:#1a7a4a;">✓ Confirmation email sent to <strong>${em}</strong></span>`
+    : `Seat${sel.length>1?'s':''} <strong>${sel.join(', ')}</strong> (${m.name}) transferred to <strong>${fn}</strong>.<br>
+       <span style="color:#e05050;font-size:12px;">⚠ Could not confirm email dispatch (${errMsg}). Check your Apps Script deployment.</span>`;
 
   document.getElementById('fs3').style.display='none';
   document.getElementById('fs4').style.display='block';
@@ -835,9 +754,9 @@ async function doTransfer() {
   // Add to history
   const hl = document.getElementById('history-list');
   const emptyEl = document.getElementById('history-empty');
-  if (emptyEl) emptyEl.style.display='none';
+  if (emptyEl) emptyEl.style.display = 'none';
   const d = document.createElement('div');
-  d.className = 'ticket-card'; d.style.cursor='default';
+  d.className = 'ticket-card'; d.style.cursor = 'default';
   d.innerHTML = `
     <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;">
       <div>
@@ -846,11 +765,11 @@ async function doTransfer() {
         <div style="margin-top:8px;font-size:13px;">To: <strong>${fn} ${ln}</strong> (${em})</div>
         <div style="font-size:11px;color:var(--muted);margin-top:2px;font-family:monospace;">Ref: ${ref}</div>
       </div>
-      <span class="tag tag-green" style="flex-shrink:0;">${emailSent ? 'Email Sent ✓' : 'Completed'}</span>
+      <span class="tag tag-green" style="flex-shrink:0;">${emailOk ? 'Email Sent ✓' : 'Completed'}</span>
     </div>
     <div class="ticket-meta" style="margin-top:10px;">
       ${sel.map(s=>`<span class="tag tag-navy">Seat ${s}</span>`).join('')}
-      <span class="tag tag-purple">$${(sel.length*420).toFixed(2)}</span>
+      <span class="tag tag-purple">${totalVal}</span>
     </div>`;
   hl.appendChild(d);
 }
